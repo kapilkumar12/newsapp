@@ -19,7 +19,14 @@ const News = (props) => {
     props.setProgress(10);
     const url = `https://newsapi.org/v2/top-headlines?country=${props.country}&category=${props.category}&category=${props.category}&apiKey=${props.apiKey}&page=${page}&pageSize=${props.pageSize}`;
     setLoading(true);
-    let data = await fetch(url);
+    let data = await fetch(url, {
+      headers: {
+        Upgrade: "HTTP / 3.0",
+        Connection: "Upgrade",
+        "Content-Length": 53,
+        "Content-Type": "text/plain",
+      },
+    });
     props.setProgress(30);
     let parseData = await data.json();
     props.setProgress(70);
@@ -65,21 +72,24 @@ const News = (props) => {
       >
         <div className="container">
           <div className="row my-3">
-            {articles.map((element) => {
-              return (
-                <div className="col-md-4 my-3" key={element.url}>
-                  <NewsItem
-                    title={element.title ? element.title : ""}
-                    description={element.description ? element.description : ""}
-                    imageUrl={element.urlToImage}
-                    newsUrl={element.url}
-                    author={element.author}
-                    date={element.publishedAt}
-                    source={element.source.name}
-                  />
-                </div>
-              );
-            })}
+            {articles &&
+              articles.map((element) => {
+                return (
+                  <div className="col-md-4 my-3" key={element.url}>
+                    <NewsItem
+                      title={element.title ? element.title : ""}
+                      description={
+                        element.description ? element.description : ""
+                      }
+                      imageUrl={element.urlToImage}
+                      newsUrl={element.url}
+                      author={element.author}
+                      date={element.publishedAt}
+                      source={element.source.name}
+                    />
+                  </div>
+                );
+              })}
           </div>
         </div>
       </InfiniteScroll>
